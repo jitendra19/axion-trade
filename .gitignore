@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 /CSVs
-/backend
+/backend/node_modules
 
 # testing
 /coverage
