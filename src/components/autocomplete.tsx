@@ -1,25 +1,18 @@
-import React, { Component, Fragment } from "react";
+import React, { ChangeEventHandler, Component, Fragment } from "react";
 import axios from 'axios';
 import PropTypes from "prop-types";
 import './styles.css'
+import {suggestion} from './main.component';
 
 interface Props {
   suggestions: Array<any>;
-}
-interface suggestion {
-  _id: string;
-  symbol: String;
-  name: String;
-  exch: String;
-  type: String;
-  exchDisp: String;
-  typeDisp: String;
-};
-interface State {
-  activeSuggestion: Partial<suggestion>;
-  filteredSuggestions: Array<suggestion>;
   showSuggestions: boolean;
   userInput: string;
+  autoCompleteChangehandler: ChangeEventHandler<HTMLInputElement>;
+  autoCompleteClickhandler: ChangeEventHandler<HTMLInputElement>;
+}
+interface State {
+  activeSuggestion: Partial<suggestion>;
   userSelection?: string;
 }
 class Autocomplete extends Component<Props, State> {
@@ -36,39 +29,18 @@ class Autocomplete extends Component<Props, State> {
 
     this.state = {
       activeSuggestion: {},
-      filteredSuggestions: [],
-      showSuggestions: false,
-      userInput: "",
       userSelection: ""
     };
   }
 
-  componentDidMount() {
-    
-  }
-
   onChange = e => {
-    const userInput = e.currentTarget.value;
-    axios.get(`/api/stocks?input=${userInput}`)
-    .then((res)=>{
-      const filteredSuggestions = res.data;
-      this.setState({
-        activeSuggestion: {},
-        filteredSuggestions,
-        showSuggestions: true,
-        userInput: userInput
-      });
-    }).catch(e => {
-      console.log(e);
-    });
+    this.props.autoCompleteChangehandler(e);
   };
 
   onClick = e => {
+    this.props.autoCompleteClickhandler(e);
     this.setState({
       activeSuggestion: {},
-      filteredSuggestions: [],
-      showSuggestions: false,
-      userInput: e.currentTarget.innerText,
       userSelection: e.currentTarget.innerText
     });
   };
@@ -78,8 +50,6 @@ class Autocomplete extends Component<Props, State> {
     // if (e.keyCode === 13 && filteredSuggestions) {
     //   this.setState({
     //     activeSuggestion: {},
-    //     showSuggestions: false,
-    //     userInput: filteredSuggestions[activeSuggestion],
     //     userSelection: filteredSuggestions[activeSuggestion]
     //   });
     // }
@@ -102,10 +72,6 @@ class Autocomplete extends Component<Props, State> {
     if (this.state.userSelection === "") {
       this.setState({
         activeSuggestion: {},
-        filteredSuggestions: [],
-        showSuggestions: false,
-        userInput: '',
-
       });
     }
   };
@@ -114,19 +80,17 @@ class Autocomplete extends Component<Props, State> {
     const {
       onChange, onClick,  onKeyDown,  onBlur,  state: {
         activeSuggestion,
-        filteredSuggestions,
-        showSuggestions,
-        userInput
       }
     } = this;
+    const {suggestions, showSuggestions, userInput} = this.props
 
     let suggestionsListComponent;
 
-    if (showSuggestions && userInput) {
-      if (filteredSuggestions && filteredSuggestions.length) {
+    if (showSuggestions) {
+      if (suggestions && suggestions.length) {
         suggestionsListComponent = (
           <ul className="suggestions">
-            {filteredSuggestions.map((suggestion, index) => {
+            {suggestions.map((suggestion, index) => {
               let className;
               if (index === activeSuggestion) {
                 className = "suggestion-active";

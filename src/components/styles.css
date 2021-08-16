@@ -44,6 +44,7 @@ border: 1.5px solid black;
   }
   .suggestions li {
     padding: 0.5rem;
+    text-align: left;
   }
   .suggestion-active,
   .suggestions li:hover {

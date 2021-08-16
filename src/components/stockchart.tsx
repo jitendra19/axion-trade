@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { Component, Fragment } from "react";
 import CanvasJSReact from '../assets/canvasjs.stock.react';
 
@@ -13,6 +14,15 @@ interface state {
   dataPoints3: Array<any>;
   isLoaded: boolean;
 }
+export interface history {
+  Date: string;
+  Open: string;
+  High: string;
+  Low: string;
+  Close: string;
+  "Adj Close": string;
+  Volume: string;
+}
 
 class App extends Component<props, state> {
     constructor(props) {
@@ -21,33 +31,39 @@ class App extends Component<props, state> {
     }
    
     componentDidMount() {
-      //Reference: https://reactjs.org/docs/faq-ajax.html#example-using-ajax-results-to-set-local-state
-      fetch("https://canvasjs.com/data/docs/ltcusd2018.json")
-        .then(res => res.json())
-        .then(
-          (data) => {
-            const dps1:any = [], dps2:any = [], dps3:any = [];
-            for (var i = 0; i < data.length; i++) {
-              dps1.push({
-                x: new Date(data[i].date),
-                y: [
-                  Number(data[i].open),
-                  Number(data[i].high),
-                  Number(data[i].low),
-                  Number(data[i].close)
-                ]
-              });
-              dps2.push({x: new Date(data[i].date), y: Number(data[i].volume_usd)});
-              dps3.push({x: new Date(data[i].date), y: Number(data[i].close)});
-            }
-            this.setState({
-              isLoaded: true,
-              dataPoints1: dps1,
-              dataPoints2: dps2,
-              dataPoints3: dps3
-            });
-          }
-        )
+      axios.get(`/api/history?symbol=amzn`) // amzn, msft, aapl, fb, nflx
+      .then((res)=>{
+        const dps1:any = [], dps2:any = [], dps3:any = [];
+        const intermediateState =  res.data[0].history.map((rec: history) => {
+          dps1.push({
+            x: new Date(rec.Date),
+            y: [
+              Number(rec.Open),
+              Number(rec.High),
+              Number(rec.Low),
+              Number(rec.Close)
+            ]
+          });
+          dps2.push({x: new Date(rec.Date), y: Number(rec.Volume)});
+          dps3.push({x: new Date(rec.Date), y: Number(rec.Close)});
+          return {
+            close: rec.Close,
+            date: rec.Date,
+            high: rec.High,
+            low:  rec.Low,
+            open: rec.Open,
+            volume_ltc: rec.Volume          
+          };
+        });
+        this.setState({
+          isLoaded: true,
+          dataPoints1: dps1,
+          dataPoints2: dps2,
+          dataPoints3: dps3
+        });          
+      }).catch(e => {
+        console.error(e);
+      });      
     }
    
     render() {

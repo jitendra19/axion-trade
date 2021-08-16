@@ -1,16 +1,10 @@
 import React from 'react';
 import './App.css';
 
-import StockCharts from './components/stockchart';
-import Autocomplete from './components/autocomplete';
+import Main from './components/main.component';
 
-function App() {
-  return (
-    <div className="App">
-      <Autocomplete></Autocomplete>
-      <StockCharts></StockCharts>
-    </div>
-  );
-}
+// Routing and other things we can work here So created Main component for main page load
 
-export default App;
+export default function App() {
+  return <div className="App"><Main /></div>;
+};
