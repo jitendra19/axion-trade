@@ -18,38 +18,33 @@ border: 1.5px solid black;
         font-size: 14px;
     }
 }
-
-
-
 .no-suggestions {
     color: #999;
     padding: 0.5rem;
     margin: auto;
   }
   
-  .suggestions {
+.suggestions {
     border: 1px solid grey;
     border-radius: 10px;
     list-style: none;
-    /* margin-top: px; */
-    max-height: 200px;
+    max-height: 300px;
     padding-left: 0;
-    margin:-3.3% 25%;
-    width:42.5%;
-border-radius: 20px;
-
+    margin:-3.3% 28%;
+    width: 43%;
+    position: absolute;
+    background-color: azure;
+    z-index: 2;
   }
   @media screen and (max-width:700px){
       .suggestions{
         margin:0px 10%; 
-    width:80%;
-
+        width:80%;
       }
   }
   .suggestions li {
     padding: 0.5rem;
   }
-  
   .suggestion-active,
   .suggestions li:hover {
     color: black;

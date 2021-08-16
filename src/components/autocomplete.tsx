@@ -1,13 +1,23 @@
 import React, { Component, Fragment } from "react";
+import axios from 'axios';
 import PropTypes from "prop-types";
 import './styles.css'
 
 interface Props {
   suggestions: Array<any>;
 }
+interface suggestion {
+  _id: string;
+  symbol: String;
+  name: String;
+  exch: String;
+  type: String;
+  exchDisp: String;
+  typeDisp: String;
+};
 interface State {
-  activeSuggestion: any;
-  filteredSuggestions: Array<any>;
+  activeSuggestion: Partial<suggestion>;
+  filteredSuggestions: Array<suggestion>;
   showSuggestions: boolean;
   userInput: string;
   userSelection?: string;
@@ -25,7 +35,7 @@ class Autocomplete extends Component<Props, State> {
     super(props);
 
     this.state = {
-      activeSuggestion: 0,
+      activeSuggestion: {},
       filteredSuggestions: [],
       showSuggestions: false,
       userInput: "",
@@ -33,25 +43,29 @@ class Autocomplete extends Component<Props, State> {
     };
   }
 
-  onChange = e => {
-    const { suggestions } = this.props;
-    const userInput = e.currentTarget.value;
-    const filteredSuggestions = suggestions.filter(
-      suggestion =>
-        (suggestion as any).toLowerCase().indexOf(userInput.toLowerCase()) > -1
-    );
+  componentDidMount() {
+    
+  }
 
-    this.setState({
-      activeSuggestion: 0,
-      filteredSuggestions,
-      showSuggestions: true,
-      userInput: e.currentTarget.value
+  onChange = e => {
+    const userInput = e.currentTarget.value;
+    axios.get(`/api/stocks?input=${userInput}`)
+    .then((res)=>{
+      const filteredSuggestions = res.data;
+      this.setState({
+        activeSuggestion: {},
+        filteredSuggestions,
+        showSuggestions: true,
+        userInput: userInput
+      });
+    }).catch(e => {
+      console.log(e);
     });
   };
 
   onClick = e => {
     this.setState({
-      activeSuggestion: 0,
+      activeSuggestion: {},
       filteredSuggestions: [],
       showSuggestions: false,
       userInput: e.currentTarget.innerText,
@@ -60,34 +74,34 @@ class Autocomplete extends Component<Props, State> {
   };
 
   onKeyDown = e => {
-    const { activeSuggestion, filteredSuggestions } = this.state;
-    if (e.keyCode === 13 && filteredSuggestions) {
-      this.setState({
-        activeSuggestion: 0,
-        showSuggestions: false,
-        userInput: filteredSuggestions[activeSuggestion],
-        userSelection: filteredSuggestions[activeSuggestion]
-      });
-    }
-    else if (e.keyCode === 38) {
-      if (activeSuggestion === 0) {
-        return;
-      }
+    // const { activeSuggestion, filteredSuggestions } = this.state;
+    // if (e.keyCode === 13 && filteredSuggestions) {
+    //   this.setState({
+    //     activeSuggestion: {},
+    //     showSuggestions: false,
+    //     userInput: filteredSuggestions[activeSuggestion],
+    //     userSelection: filteredSuggestions[activeSuggestion]
+    //   });
+    // }
+    // else if (e.keyCode === 38) {
+    //   if (activeSuggestion === 0) {
+    //     return;
+    //   }
 
-      this.setState({ activeSuggestion: activeSuggestion - 1 });
-    }
-    else if (e.keyCode === 40) {
-      if (filteredSuggestions && activeSuggestion - 1 === filteredSuggestions.length) {
-        return;
-      }
-      this.setState({ activeSuggestion: activeSuggestion + 1 });
-    }
+    //   this.setState({ activeSuggestion: activeSuggestion - 1 });
+    // }
+    // else if (e.keyCode === 40) {
+    //   if (filteredSuggestions && activeSuggestion - 1 === filteredSuggestions.length) {
+    //     return;
+    //   }
+    //   this.setState({ activeSuggestion: activeSuggestion + 1 });
+    // }
   };
 
   onBlur = (e)=> {
     if (this.state.userSelection === "") {
       this.setState({
-        activeSuggestion: 0,
+        activeSuggestion: {},
         filteredSuggestions: [],
         showSuggestions: false,
         userInput: '',
@@ -114,14 +128,14 @@ class Autocomplete extends Component<Props, State> {
           <ul className="suggestions">
             {filteredSuggestions.map((suggestion, index) => {
               let className;
-
               if (index === activeSuggestion) {
                 className = "suggestion-active";
               }
-
               return (
-                <li className={className} key={suggestion} onClick={onClick}>
-                  {suggestion}
+                <li className={className} 
+                  key={suggestion._id + suggestion.symbol} 
+                  onClick={onClick}>
+                  {suggestion.name} ({suggestion.symbol} )
                 </li>
               );
             })}

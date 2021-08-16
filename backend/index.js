@@ -35,7 +35,7 @@ app.get('/foo', (req, res)=>{
 
 app.get('/api/stocks', (req, res)=>{
     console.log(req.query);
-    stock.find({symbol: {$regex: '.*(?i)' + req.query.input + '(?-i).*'}}).exec(function(err, doc) {
+    stock.find({symbol: {$regex: '.*(?i)' + req.query.input + '(?-i).*'}}).limit(8).exec(function(err, doc) {
         res.json(doc);
     });
 });
