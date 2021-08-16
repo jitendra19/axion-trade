@@ -1,14 +1,14 @@
 .input{
-margin:auto;
-height:35px;
-width:40%;
-border-radius: 20px;
-margin: 50px 25%;
-outline: none;
-font-size:18px;
-padding:0px 20px;
-/* border-color: black; */
-border: 1.5px solid black;
+  margin:auto;
+  height:35px;
+  width:40%;
+  border-radius: 20px;
+  margin: 50px 25%;
+  outline: none;
+  font-size:18px;
+  padding:0px 20px;
+  /* border-color: black; */
+  border: 1.5px solid black;
 }
 
 @media screen and (max-width:700px){
