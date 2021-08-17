@@ -2,6 +2,7 @@ import React, {Component, Fragment} from "react";
 import StockCharts from './stockchart';
 import Autocomplete from './autocomplete';
 import axios from "axios";
+import GridHistory from "./history-grid.component";
 
 interface props {
 
@@ -11,6 +12,7 @@ interface state {
     filteredSuggestions: Array<suggestion>;
     showSuggestions: boolean;
     userSelection?: string;
+    toggleView?: boolean;
 }
 export interface suggestion {
     _id: string;
@@ -30,12 +32,11 @@ export default class Main extends Component <props, state> {
             userInput: '',
             filteredSuggestions: [],
             showSuggestions: false,
-            userSelection: ''
+            userSelection: '',
+            toggleView: true
         }
     }
-    componentDidMount() {
-
-    }
+    componentDidMount() {}
     render() {
         return <>
             <Autocomplete 
@@ -46,7 +47,8 @@ export default class Main extends Component <props, state> {
                 userInput={this.state.userInput}
                 >
             </Autocomplete>
-            <StockCharts></StockCharts>
+            {!this.state.toggleView && <StockCharts></StockCharts>}
+            {this.state.toggleView && <GridHistory />}
         </>;
     }
     // Handle Methods and APIs
@@ -66,6 +68,12 @@ export default class Main extends Component <props, state> {
         });
     }
     autoCompleteClickhandler = (e) => {
+        debugger;
         this.setState({showSuggestions: false, userInput: ''});
+        this.fetchChartData(e)
+    }
+    fetchChartData = (e) => {
+        debugger;
+        console.log(e);
     }
 }
