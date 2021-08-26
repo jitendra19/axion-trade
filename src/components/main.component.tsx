@@ -33,7 +33,7 @@ export default class Main extends Component <props, state> {
             filteredSuggestions: [],
             showSuggestions: false,
             userSelection: '',
-            toggleView: true
+            toggleView: false
         }
     }
     componentDidMount() {}
@@ -47,8 +47,12 @@ export default class Main extends Component <props, state> {
                 userInput={this.state.userInput}
                 >
             </Autocomplete>
-            {!this.state.toggleView && <StockCharts></StockCharts>}
-            {this.state.toggleView && <GridHistory />}
+            <div>
+                <button onClick={() => this.setState({toggleView:true})}>Chart View</button>
+                <button onClick={() => this.setState({toggleView:false})}>Grid View</button>
+                </div>
+            {this.state.toggleView && <StockCharts></StockCharts>}        
+            {!this.state.toggleView && <GridHistory />}
         </>;
     }
     // Handle Methods and APIs
